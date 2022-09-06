@@ -5,50 +5,62 @@ source("gaussian/h_est_gaussian.R")
 source("general/beta_est_smoothed.R")
 source("general/h_est_smoothed.R")
 
-data = simulate_ltm_gaussian(200, 3, c(10, 5, 1))
-# data$X
-# res = beta.est.prl.gaussian(data$Y, data$X, data$beta)
-# est_Z = h.est.rank.reg.gaussian(data$Y, data$X, res$est_beta)
+library(rjson)
+library(doParallel)
+no_cores <- detectCores()
+cl <- makeCluster(no_cores-1)
+registerDoParallel(cl) 
 
-res = beta.est.smoothed(data$Y, data$X, data$beta)
-res
+n <- 10
+num_datasets <- 7
 
-est_h <- h.est.smoothed(res$est_beta, data$Y, data$X)
+# data = simulate_ltm_gaussian(20, 3, c(10, 5, 1))
+# # data$X
+# # res = beta.est.prl.gaussian(data$Y, data$X, data$beta)
+# # est_Z = h.est.rank.reg.gaussian(data$Y, data$X, res$est_beta)
+# # est_Z - data$Z
+# 
+# res = beta.est.smoothed(data$Y, data$X, data$beta)
+# res
+# 
+# est_h <- h.est.smoothed(res$est_beta, data$Y, data$X)
+# 
+# est_h - data$Z
+# res$est_beta - data$beta
+# est_h
 
-est_h - data$Z
+# save_result <- function(est_betas, betas) {
+#   res <- list("betas"=betas, "est_betas"=est_betas,
+#               "num_datasets"=nrow(est_betas), "num_betas"=length(betas), 
+#               "n"=n, "m"=m)
+#   json_data <- toJSON(res)
+#   
+#   write(json_data, file_name)
+#   
+#   return(res)
+# }
 
-est_h
-
-S_beta <- function(potential_val, y, est_beta, Y, X, y_0) {
-  res <- 0
-  m_X <- X %*% est_beta
-  n <- nrow(X)
-  for(i in 1:n) {
-    for(j in 1:n) {
-      if(i == j) {
-        next
-      }
-      d_iy <- 1*(Y[i] <= y)
-      d_jy_0 <- 1*(Y[j] <= y_0)
-      res <- res + (d_iy - d_jy_0)*pnorm(sqrt(n)*(m_X[i] - m_X[j] - potential_val))
-    }
-  }
-  
-  return(res + 0.001*potential_val**2)
+get.noise <- function(n, m=3, beta=c(10, 5, 1)) {
+  data = simulate_ltm_gaussian(n, m, beta)
+  res_beta_est <- beta.est.smoothed(data$Y, data$X, data$beta)
+  est_Z <- h.est.smoothed(res_beta_est$est_beta, data$Y, data$X)
+  return(est_Z)
 }
 
-i <- 7
-data$Y[i]
-data$Z[i]
-est_h[i]
-S_beta(data$Z[i], data$Y[i], res$est_beta, data$Y, data$X, 0)
-S_beta(est_h[i], data$Y[i], res$est_beta, data$Y, data$X, 0)
 
-optim_res <- optim(0, fn=S_beta, method = "BFGS", 
-                   # control = list(trace=T, REPORT=1),
-                   y=data$Y[i], est_beta=res$est_beta, Y=data$Y, X=data$X, y_0=0)
-optim_res$par
-data$Z[i]
 
-S_beta(data$Z[i], data$Y[i], res$est_beta, data$Y, data$X, 0)
-S_beta(optim_res$par, data$Y[i], res$est_beta, data$Y, data$X, 0)
+res <- foreach(i=1:num_datasets, .combine="rbind", .packages = c("EnvStats")) %dopar% {
+  get.noise()
+}
+
+res
+
+stopCluster(cl)
+
+# i <- 7
+# data$Y[i]
+# data$Z[i]
+# est_h[i]
+# S_beta(data$Z[i], data$Y[i], res$est_beta, data$Y, data$X, 0)
+# S_beta(est_h[i], data$Y[i], res$est_beta, data$Y, data$X, 0)
+
