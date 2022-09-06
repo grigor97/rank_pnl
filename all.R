@@ -137,6 +137,12 @@ res
 
 dim(res$est_Z)
 
+res$noise
+
+# d <- fromJSON(file="results.json")
+# rr <- length(d$beta)/3
+# nn <- length(d$noise)/rr
+# sum(matrix(d$noise, nn, rr) - res$noise)
 
 
 
