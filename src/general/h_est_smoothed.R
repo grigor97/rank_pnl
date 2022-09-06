@@ -1,4 +1,5 @@
-# https://academiccommons.columbia.edu/doi/10.7916/D8348JQD 
+# https://academiccommons.columbia.edu/doi/10.7916/D8348JQD  wrong objective here or should be argmin instead of argmax
+# https://www.jstor.org/stable/3082013#metadata_info_tab_contents
 # h estimation, can used also for beta estimation
 # h(y_0) = 0 for identifiabilty and beta[-1] = 1
 h.est.smoothed <- function(est_beta, Y, X, y_0=0) {
@@ -11,13 +12,13 @@ h.est.smoothed <- function(est_beta, Y, X, y_0=0) {
         if(i == j) {
           next
         }
-        d_iy <- 1*(Y[i] <= y)
-        d_jy_0 <- 1*(Y[j] <= y_0)
+        d_iy <- 1*(Y[i] >= y)
+        d_jy_0 <- 1*(Y[j] >= y_0)
         res <- res + (d_iy - d_jy_0)*pnorm(sqrt(n)*(m_X[i] - m_X[j] - potential_val))
       }
     }
 
-    return(-res)
+    return(-res + 0.001*potential_val**2)
   }
   
   dummy <- function(y) {
@@ -26,15 +27,6 @@ h.est.smoothed <- function(est_beta, Y, X, y_0=0) {
                        y=y, est_beta=est_beta, Y=Y, X=X, y_0=y_0)
     return(optim_res$par)
   }
-  
-  # n <- nrow(X)
-  # est_h_Y <- rep(0, n)
-  # for(j in 1:n) {
-  #   optim_res <- optim(est_h_Y[j], fn=S_beta, method = "BFGS", 
-  #                      control = list(trace=T, REPORT=1),
-  #                      y=Y[j], est_beta=est_beta, Y=Y, X=X, y_0=y_0)
-  #   est_h_Y[j] <- optim_res$par
-  # }
   
   est_h_Y <- sapply(Y, dummy)
   
