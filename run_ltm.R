@@ -20,11 +20,24 @@ no_cores <- detectCores()
 cl <- makeCluster(no_cores-1)
 registerDoParallel(cl) 
 
-n <- 100
-num_datasets <- 7
-name_noise <- "gaussian" # "gaussian", "evd"
-name_h <- "cube" # "cube", "log"
-name_alg <- "prl_smoothed" # "smoothed", "prlg", "prl_smoothed"
+
+args <- commandArgs(trailingOnly = TRUE)
+print(args)
+n <- strtoi(args[1])
+num_datasets <- strtoi(args[2])
+name_noise <- args[3]
+name_h <- args[4]
+name_alg <- args[5]
+print(n)
+print(num_datasets)
+print(name_noise)
+print(name_h)
+print(name_alg)
+# n <- 100
+# num_datasets <- 7
+# name_noise <- "gaussian" # "gaussian", "evd"
+# name_h <- "cube" # "cube", "log"
+# name_alg <- "prl_smoothed" # "smoothed", "prlg", "prl_smoothed"
 
 file_name <- paste("../res/results", name_noise, name_h, 
                    name_alg, n, num_datasets, ".json", sep = "_")
