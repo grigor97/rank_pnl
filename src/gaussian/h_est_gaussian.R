@@ -23,7 +23,7 @@ inverse <- function(f, lower, upper){
 inverse.cdf.z <- inverse(cdf.z, -100, 100)
 
 # works the best: name is rank_reg, from the paper https://projecteuclid.org/journals/annals-of-statistics/volume-16/issue-4/Rank-Regression/10.1214/aos/1176351044.full
-h.est.rank.reg.gaussian <- function(Y, X, est_beta) {
+h.est.rank.reg.gaussian <- function(est_beta, Y, X) {
   ranks_Y <- rank(Y)
   empirical_cdf_Y <- ranks_Y/(length(Y)+1)
   m_X <- X %*% est_beta

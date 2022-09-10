@@ -18,25 +18,12 @@ beta.est.prl.smoothed <- function(Y, X, gt_beta=NA) {
     for(i in 1:(n-1)) {
       for(j in (i+1):n) {
         # note here we take h = sqrt(n)
-        lik <- lik + log(pnorm((m_X[j] - m_X[i])/sqrt(2*n)))
+        lik <- lik + log(pnorm(sqrt(n)*(m_X[j] - m_X[i])))
       }
     }
     
     return(-lik)
   }
-  
-  # grad_prl <- function(beta, Y, X) {
-  #   n <- nrow(X)
-  #   grad <- 0
-  #   m_X <- X %*% beta
-  #   for(i in 1:(n-1)) {
-  #     for(j in (i+1):n) {
-  #       grad <- grad + dnorm((m_X[j] - m_X[i])/sqrt(2*n))*(X[j, ]- X[i, ])/(pnorm((m_X[j] - m_X[i])/sqrt(2*n))*sqrt(2*n))
-  #     }
-  #   }
-  #   
-  #   return(-grad)
-  # }
   
   coefs <- rep(0, m)
   res <- optim(coefs, fn=prl, method = "BFGS", 
@@ -49,6 +36,7 @@ beta.est.prl.smoothed <- function(Y, X, gt_beta=NA) {
     gt_lik <- prl(gt_beta, Y, X)
   }
   
-  return(list("est_beta"=res$par, "est_obj"=prl_lik, 
+  est_beta <- res$par/res$par[length(res$par)]
+  return(list("est_beta"=est_beta, "est_obj"=prl_lik, 
               "gt_beta"=gt_beta, "gt_obj"=gt_lik))
 }
