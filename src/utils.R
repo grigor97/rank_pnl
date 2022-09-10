@@ -1,5 +1,4 @@
 library(EnvStats)
-set.seed(12)
 
 bd <- function(x, y) {
   list("est_Z"=cbind(x$est_Z, y$est_Z), "Z"=cbind(x$Z, y$Z),
