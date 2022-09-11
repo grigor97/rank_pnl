@@ -28,7 +28,7 @@ h.est.prl.smoothed <- function(est_beta, Y, X, y_0=0) {
   
   dummy <- function(y) {
     optim_res <- optim(0, fn=S_beta, method = "BFGS", 
-                       control = list(trace=T, REPORT=1),
+                       # control = list(trace=T, REPORT=1),
                        y=y, est_beta=est_beta, Y=Y, X=X, y_0=y_0)
     return(optim_res$par)
   }

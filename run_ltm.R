@@ -40,10 +40,6 @@ print(name_alg)
 # name_h <- "cube" # "cube", "log"
 # name_alg <- "prl_smoothed" # "smoothed", "prlg", "prl_smoothed"
 
-file_name <- paste("../res/results", name_noise, name_h, 
-                   name_alg, n, num_datasets, gsub(" ", "", Sys.time(), fixed = TRUE), ".json", sep = "_")
-
-
 run.ltm.est <- function(n, m=3, beta=c(10, 5, 1)) {
   data = simulate_ltm(n, m, beta, name_noise, name_h)
   
@@ -80,6 +76,8 @@ res <- foreach(i=1:num_datasets, .combine=bd) %dopar% {
 
 res
 json_data <- toJSON(res)
+file_name <- paste("../res/results", name_noise, name_h, 
+                   name_alg, n, num_datasets, gsub(" ", "", Sys.time(), fixed = TRUE), ".json", sep = "_")
 write(json_data, file_name)
 
 getwd()

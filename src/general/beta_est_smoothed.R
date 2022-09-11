@@ -41,7 +41,7 @@ beta.est.smoothed <- function(Y, X, gt_beta=NA) {
   
   coefs <- rep(0, m)
   res <- optim(coefs, fn=prl, gr=grad_prl, method = "BFGS", 
-               control = list(trace=T, REPORT=1),
+               # control = list(trace=T, REPORT=1),
                Y=Y, X=X)
   
   prl_lik <- res$value
