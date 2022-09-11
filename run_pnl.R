@@ -91,7 +91,7 @@ no_cores <- detectCores()
 cl <- makeCluster(no_cores-1)
 registerDoParallel(cl) 
 
-res <- foreach(i=1:num_datasets, .combine="rbind", .packages = c("dHSIC")) %dopar% {
+res <- foreach(i=1:num_datasets, .combine="rbind", .packages = c("dHSIC", "EnvStats")) %dopar% {
   .GlobalEnv$cdf.z <- cdf.z
   
   run_pnl()
