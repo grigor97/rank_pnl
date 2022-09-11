@@ -5,7 +5,7 @@
 #SBATCH --get-user-env
 #SBATCH --clusters=cm2_tiny
 #SBATCH --partition=cm2_tiny
-#SBATCH --nodes=4
+#SBATCH --nodes=1
 #SBATCH --mail-type=end
 #SBATCH --mail-user=keropyan@in.tum.de
 #SBATCH --export=NONE
