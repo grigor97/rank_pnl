@@ -12,13 +12,13 @@ h.est.prl.smoothed <- function(est_beta, Y, X, y_0=0) {
         }
         d_iy <- 1*(Y[i] >= y)
         d_jy_0 <- 1*(Y[j] >= y_0)
-        print("-------")
-        print(m_X[i])
-        print(m_X[j])
-        print(potential_val)
-        print(pnorm(sqrt(n)*(m_X[i] - m_X[j] - potential_val)))
-        print(log(pnorm(sqrt(n)*(m_X[i] - m_X[j] - potential_val))))
-        print("----------")
+        # print("-------")
+        # print(m_X[i])
+        # print(m_X[j])
+        # print(potential_val)
+        # print(pnorm(sqrt(n)*(m_X[i] - m_X[j] - potential_val)))
+        # print(log(pnorm(sqrt(n)*(m_X[i] - m_X[j] - potential_val))))
+        # print("----------")
         res <- res + (d_iy - d_jy_0)*log(pnorm(sqrt(n)*(m_X[i] - m_X[j] - potential_val)))
       }
     }

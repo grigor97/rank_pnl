@@ -8,10 +8,11 @@ source("general/h_est_smoothed.R")
 source("general/beta_est_prl_smoothed.R")
 source("general/h_est_prl_smoothed.R")
 
-# data = simulate_ltm(100, 3, c(10, 5, 1), "evd", "cube")
-# res_beta_est <- beta.est.prl.smoothed(data$Y, data$X)
+# data = simulate_ltm(10, 3, c(10, 5, 1), "evd", "cube")
+# res_beta_est <- beta.est.smoothed(data$Y, data$X)
 # res_beta_est
-# est_Z <- h.est.prl.smoothed(res_beta_est$est_beta, data$Y, data$X)
+# est_Z <- h.est.smoothed(res_beta_est$est_beta, data$Y, data$X)
+# est_Z
 
 library(rjson)
 library(doParallel)
@@ -40,7 +41,7 @@ print(name_alg)
 # name_alg <- "prl_smoothed" # "smoothed", "prlg", "prl_smoothed"
 
 file_name <- paste("../res/results", name_noise, name_h, 
-                   name_alg, n, num_datasets, ".json", sep = "_")
+                   name_alg, n, num_datasets, gsub(" ", "", Sys.time(), fixed = TRUE), ".json", sep = "_")
 
 
 run.ltm.est <- function(n, m=3, beta=c(10, 5, 1)) {
@@ -84,4 +85,3 @@ write(json_data, file_name)
 getwd()
 
 stopCluster(cl)
-

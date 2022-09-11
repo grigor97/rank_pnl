@@ -25,21 +25,22 @@ beta.est.smoothed <- function(Y, X, gt_beta=NA) {
     return(-lik)
   }
   
-  # grad_prl <- function(beta, Y, X) {
-  #   n <- nrow(X)
-  #   grad <- 0
-  #   m_X <- X %*% beta
-  #   for(i in 1:(n-1)) {
-  #     for(j in (i+1):n) {
-  #       grad <- grad + dnorm((m_X[j] - m_X[i])/sqrt(2*n))*(X[j, ]- X[i, ])/(pnorm((m_X[j] - m_X[i])/sqrt(2*n))*sqrt(2*n))
-  #     }
-  #   }
-  #   
-  #   return(-grad)
-  # }
+  grad_prl <- function(beta, Y, X) {
+    n <- nrow(X)
+    grad <- 0
+    m_X <- X %*% beta
+    for(i in 1:(n-1)) {
+      for(j in (i+1):n) {
+        # note here we take h = 1/sqrt(n)
+        grad <- grad + sqrt(n)*dnorm(sqrt(n)*(m_X[j] - m_X[i]))*(X[j, ] - X[i, ])
+      }
+    }
+    
+    return(-grad)
+  }
   
   coefs <- rep(0, m)
-  res <- optim(coefs, fn=prl, method = "BFGS", 
+  res <- optim(coefs, fn=prl, gr=grad_prl, method = "BFGS", 
                control = list(trace=T, REPORT=1),
                Y=Y, X=X)
   
