@@ -13,7 +13,7 @@ est.pnl.causal.order <- function(data, beta.est.alg, h.est.alg,
   }
   
   order_of_nodes <- c()
-  cur_nodes <- names(data)
+  cur_nodes <- c(1:ncol(data))
   
   while(length(cur_nodes) > 1) {
     min_dep_val <- 1000
@@ -27,8 +27,8 @@ est.pnl.causal.order <- function(data, beta.est.alg, h.est.alg,
         print(rem_nodes)
       }
       
-      Y <- as.matrix(data[node])
-      X <- as.matrix(data[rem_nodes])
+      Y <- as.matrix(data[, node])
+      X <- as.matrix(data[, rem_nodes])
       XX <- cbind(X, X^2)
       
       res_beta_est <- beta.est.alg(Y, XX)
@@ -50,9 +50,6 @@ est.pnl.causal.order <- function(data, beta.est.alg, h.est.alg,
     
     order_of_nodes <- c(last_node, order_of_nodes)
     cur_nodes <- cur_nodes[!cur_nodes %in% last_node]
-    print(!cur_nodes %in% last_node)
-    print(cur_nodes)
-    print(last_node)
     if(output) {
       print("current nodes ")
       print(cur_nodes)

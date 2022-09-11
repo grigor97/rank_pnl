@@ -1,0 +1,108 @@
+source("../codeANM/code/startups/startupLINGAM.R", chdir = TRUE)
+source("../codeANM/code/startups/startupICML.R", chdir = TRUE)
+pars <- list(regr.method = train_linear, regr.pars = list(), 
+             indtest.method = indtestHsic, indtest.pars = list())
+
+
+source("utils.R")
+
+source("gaussian/beta_est_prl_gaussian.R")
+source("gaussian/h_est_gaussian.R")
+
+source("general/beta_est_smoothed.R")
+source("general/h_est_smoothed.R")
+
+source("general/beta_est_prl_smoothed.R")
+source("general/h_est_prl_smoothed.R")
+
+source("pnl/est_pnl_causal_order.R")
+
+library(rjson)
+library(doParallel)
+
+# name_alg = "prlg"
+# name_noise <- "gaussian"
+# name_h <- "cube"
+# n <- 100
+# d <- 3
+# num_datasets <- 7
+
+args <- commandArgs(trailingOnly = TRUE)
+print(args)
+n <- strtoi(args[1])
+d <- strtoi(args[2])
+num_datasets <- strtoi(args[3])
+name_noise <- args[4]
+name_h <- args[5]
+name_alg <- args[6]
+print(n)
+print(d)
+print(num_datasets)
+print(name_noise)
+print(name_h)
+print(name_alg)
+
+beta.est.alg <- NA
+h.est.alg <- NA
+if(name_alg == "smoothed") {
+  beta.est.alg <- beta.est.smoothed
+  h.est.alg <- h.est.smoothed
+} else if(name_alg == "prlg") {
+  beta.est.alg <- beta.est.prl.gaussian
+  h.est.alg <- h.est.rank.reg.gaussian
+} else if(name_alg == "prl_smoothed") {
+  beta.est.alg <- beta.est.prl.smoothed
+  h.est.alg <- h.est.prl.smoothed
+} else {
+  print("no such model ...")
+  return()
+}
+
+run_pnl <- function() {
+  data = simulate.mult.pnl.erdos.renyi(n, d, name_noise, name_h)
+  
+  res <- est.pnl.causal.order(data$X, beta.est.alg, h.est.alg, output = FALSE)
+  resRESIT <- ICML(data$X, model = train_linear, indtest = indtestHsic, output = FALSE)
+  resLINGAM <- lingamWrap(data$X)
+  
+  # res
+  # resRESIT
+  # resLINGAM
+  
+  est <- matrix(0, d, d)
+  est_RESIT <- matrix(0, d, d)
+  est_LINGAM <- matrix(0, d, d)
+  for(i in 1:(d-1)) {
+    for(j in (i+1):d) {
+      est[res[i], res[j]] <- 1
+      est_RESIT[resRESIT[i], resRESIT[j]] <- 1
+      est_LINGAM[resLINGAM[i], resLINGAM[j]] <- 1
+    }
+  }
+  
+  wrong <- sum(est[col(est) < row(est)])
+  wrong_RESIT <- sum(est_RESIT[col(est_RESIT) < row(est_RESIT)])
+  wrong_LINGAM <- sum(est_LINGAM[col(est_LINGAM) < row(est_LINGAM)])
+  wrongs <- c(wrong, wrong_RESIT, wrong_LINGAM)
+  wrongs
+}
+
+no_cores <- detectCores()
+cl <- makeCluster(no_cores-1)
+registerDoParallel(cl) 
+
+res <- foreach(i=1:num_datasets, .combine="rbind", .packages = c("dHSIC")) %dopar% {
+  .GlobalEnv$cdf.z <- cdf.z
+  
+  run_pnl()
+}
+
+res
+
+json_data <- toJSON(list("res"=res, "n"=n, "d"=d, "num_datasets"=num_datasets, 
+                         "name_noise"=name_noise, "name_h"=name_h, "name_alg"=name_alg))
+file_name <- paste("../res/pnl_results", name_noise, name_h, 
+                   name_alg, n, num_datasets, gsub(" ", "", Sys.time(), fixed = TRUE), ".json", sep = "_")
+write(json_data, file_name)
+
+stopCluster(cl)
