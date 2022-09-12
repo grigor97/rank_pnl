@@ -24,7 +24,7 @@ library(doParallel)
 # name_noise <- "gaussian"
 # name_h <- "cube"
 # n <- 100
-# d <- 3
+# d <- 4
 # num_datasets <- 7
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -35,12 +35,12 @@ num_datasets <- strtoi(args[3])
 name_noise <- args[4]
 name_h <- args[5]
 name_alg <- args[6]
-print(n)
-print(d)
-print(num_datasets)
-print(name_noise)
-print(name_h)
-print(name_alg)
+# print(n)
+# print(d)
+# print(num_datasets)
+# print(name_noise)
+# print(name_h)
+# print(name_alg)
 
 beta.est.alg <- NA
 h.est.alg <- NA
@@ -65,27 +65,38 @@ run_pnl <- function() {
   resRESIT <- ICML(data$X, model = train_linear, indtest = indtestHsic, output = FALSE)
   resLINGAM <- lingamWrap(data$X)
   
-  # res
-  # resRESIT
-  # resLINGAM
+  # print(res)
+  # print("---")
+  # print(resRESIT)
+  # print("---")
+  # print(resLINGAM)
+  # print("---")
+  # print(data$A)
   
-  est <- matrix(0, d, d)
-  est_RESIT <- matrix(0, d, d)
-  est_LINGAM <- matrix(0, d, d)
+  wrong <- 0
+  wrong_RESIT <- 0
+  wrong_LINGAM <- 0
   for(i in 1:(d-1)) {
     for(j in (i+1):d) {
-      est[res[i], res[j]] <- 1
-      est_RESIT[resRESIT[i], resRESIT[j]] <- 1
-      est_LINGAM[resLINGAM[i], resLINGAM[j]] <- 1
+      if(data$A[res[j], res[i]] == 1) {
+        wrong = wrong + 1
+      }
+      
+      if(data$A[resRESIT[j], resRESIT[i]] == 1) {
+        wrong_RESIT = wrong_RESIT + 1
+      }
+      
+      if(data$A[resLINGAM[j], resLINGAM[i]] == 1) {
+        wrong_LINGAM = wrong_LINGAM + 1
+      }
     }
   }
   
-  wrong <- sum(est[col(est) < row(est)])
-  wrong_RESIT <- sum(est_RESIT[col(est_RESIT) < row(est_RESIT)])
-  wrong_LINGAM <- sum(est_LINGAM[col(est_LINGAM) < row(est_LINGAM)])
   wrongs <- c(wrong, wrong_RESIT, wrong_LINGAM)
   wrongs
 }
+
+# run_pnl()
 
 no_cores <- detectCores()
 cl <- makeCluster(no_cores-1)
