@@ -102,7 +102,7 @@ res
 json_data <- toJSON(list("res"=res, "n"=n, "d"=d, "num_datasets"=num_datasets, 
                          "name_noise"=name_noise, "name_h"=name_h, "name_alg"=name_alg))
 file_name <- paste("../res/pnl_results", name_noise, name_h, 
-                   name_alg, n, num_datasets, gsub(" ", "", Sys.time(), fixed = TRUE), ".json", sep = "_")
+                   name_alg, n, d, num_datasets, gsub(" ", "", Sys.time(), fixed = TRUE), ".json", sep = "_")
 write(json_data, file_name)
 
 stopCluster(cl)
