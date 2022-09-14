@@ -66,8 +66,7 @@ run_pnl <- function() {
     }
   }
   
-  wrongs <- c(wrong, wrong_RESIT, wrong_LINGAM)
-  wrongs
+  wrong
 }
 
 # run_pnl()
