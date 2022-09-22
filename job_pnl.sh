@@ -1,13 +1,15 @@
 #!/bin/bash
-#SBATCH -o /dss/dsshome1/lxc02/ge79mok2/new1_rank_pnl/res/myjob_pnl1.out
+#SBATCH -o /dss/dsshome1/lxc02/ge79mok2/new1_rank_pnl/res/myjob_pnl.out
 #SBATCH -D /dss/dsshome1/lxc02/ge79mok2/new1_rank_pnl/
-#SBATCH -J jobpnl1
+#SBATCH -J jobpnl
 #SBATCH --get-user-env
 #SBATCH --clusters=cm2
 #SBATCH --partition=cm2_large
 #SBATCH --qos=cm2_large
-#SBATCH --nodes=40
-#SBATCH --mail-type=end
+#SBATCH --nodes=20
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=56
+#SBATCH --mail-type=all
 #SBATCH --mail-user=keropyan@in.tum.de
 #SBATCH --export=NONE
 #SBATCH --time=48:00:00
