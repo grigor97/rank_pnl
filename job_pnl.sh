@@ -1,15 +1,16 @@
 #!/bin/bash
 #SBATCH -o /dss/dsshome1/lxc02/ge79mok2/new1_rank_pnl/res/myjob_pnl1.out
 #SBATCH -D /dss/dsshome1/lxc02/ge79mok2/new1_rank_pnl/
-#SBATCH -J job_pnl1
+#SBATCH -J jobpnl1
 #SBATCH --get-user-env
-#SBATCH --clusters=cm2_tiny
-#SBATCH --partition=cm2_tiny
-#SBATCH --nodes=1
+#SBATCH --clusters=cm2
+#SBATCH --partition=cm2_large
+#SBATCH --qos=cm2_large
+#SBATCH --nodes=40
 #SBATCH --mail-type=end
 #SBATCH --mail-user=keropyan@in.tum.de
 #SBATCH --export=NONE
-#SBATCH --time=00:02:00
+#SBATCH --time=48:00:00
 
 
 module load slurm_setup
@@ -23,24 +24,39 @@ module load gsl/2.7-gcc11
 
 cd src/
 
-# SAMPLE_SIZE=("10" "20")
-# NUM_DATASETS=("20", "30")
+NUM_DATASETS=("100")
+N=("100" "500" "1000" "1500" "2000")
+D=("4" "7")
+NOISE=("gaussian" "evd")
+METHOD=("prlg")
 
-# run jobs
-# for n in "${SAMPLE_SIZE[@]}"; do
-#	for num_d in "${NUM_DATASETS[@]}"; do
-#		while true; do
-#			SUBJOBS= `jobs -r | wc -l` # detect how manv subiobs are alreadv runnina
-#			if test $SUBJOBS -It $SLURM_JOB_NUM_NODES; then
-#				sleep 1
-#				srun -N 1 -n $SLURM_NTASKS_PER_NODE -c $SLURM_CPUS_PER_TASK Rscript ../run_ltm.R n dum_d gaussian cube smoothed
-#			fi
-#		done
-#	done
-#done
+# Run jobs
+for d in "${D[@]}"; do
+    for n in "${N[@]}"; do
+        for noise in "${NOISE[@]}"; do
+            for num_datasets in "${NUM_DATASETS[@]}"; do
+                for method in "${METHOD[@]}"; do
+                    while true; do
+                        SUBJOBS=`jobs -r | wc -l` # detect how many subjobs are already running
+                        if test $SUBJOBS -lt $SLURM_JOB_NUM_NODES; then
+                            sleep 1
+                            srun -N 1 -n $SLURM_NTASKS_PER_NODE -c $SLURM_CPUS_PER_TASK \
+                            --export=ALL --exclusive Rscript ../run_pnl.R n d num_datasets noise "cube" method &
+                            break
+                        fi
+                    done
+                done
+            done
+        done
+    done
+done
+
+wait
+ 
+exit
 
 
-Rscript ../run_pnl.R 10 3 7 gaussian cube prlg
+# Rscript ../run_pnl.R 10 3 7 gaussian cube prlg
 
 # query status for my job, approx. time for pending job, past jobs
 # squeue -M cm2 -u ge79mok2
