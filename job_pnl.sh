@@ -43,7 +43,7 @@ for d in "${D[@]}"; do
                         if test $SUBJOBS -lt $SLURM_JOB_NUM_NODES; then
                             sleep 1
                             srun -N 1 -n $SLURM_NTASKS_PER_NODE -c $SLURM_CPUS_PER_TASK \
-                            --export=ALL --exclusive Rscript ../run_pnl.R n d num_datasets noise "cube" method &
+                            --export=ALL --exclusive Rscript ../run_pnl.R $n $d $num_datasets $noise "cube" $method &
                             break
                         fi
                     done
