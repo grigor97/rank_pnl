@@ -6,7 +6,7 @@
 #SBATCH --clusters=cm2
 #SBATCH --partition=cm2_large
 #SBATCH --qos=cm2_large
-#SBATCH --nodes=20
+#SBATCH --nodes=25
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=56
 #SBATCH --mail-type=all
