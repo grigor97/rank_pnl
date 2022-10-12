@@ -1,3 +1,4 @@
+# beta estimation for method RankG in the paper
 beta.est.prl.gaussian <- function(Y, X, gt_beta=NA) {
   m <- ncol(X)
   n <- nrow(X)

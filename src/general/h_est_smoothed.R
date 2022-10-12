@@ -1,7 +1,4 @@
-# https://academiccommons.columbia.edu/doi/10.7916/D8348JQD  wrong objective here or should be argmin instead of argmax
-# https://www.jstor.org/stable/3082013#metadata_info_tab_contents
-# h estimation, can used also for beta estimation
-# h(y_0) = 0 for identifiabilty and beta[-1] = 1
+# function h estimation in RankS method in the paper
 h.est.smoothed <- function(est_beta, Y, X, y_0=0) {
   S_beta <- function(potential_val, y, est_beta, Y, X, y_0) {
     res <- 0

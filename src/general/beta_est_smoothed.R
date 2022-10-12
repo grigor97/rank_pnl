@@ -1,4 +1,4 @@
-# from https://www.sciencedirect.com/science/article/abs/pii/S0167947312002861
+# beta estimation in RankS method in the paper
 beta.est.smoothed <- function(Y, X, gt_beta=NA) {
   m <- ncol(X)
   n <- nrow(X)

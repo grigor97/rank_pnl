@@ -1,11 +1,14 @@
 library(dHSIC)
 
+# calculates the HSIC measure
 dependence.hsic <- function(U, V) {
   dhsic(U, V, kernel = "gaussian.fixed")$dHSIC
 }
 
+# estimates the causal order for PNL models
 est.pnl.causal.order <- function(data, beta.est.alg, h.est.alg, 
-                                 dependence.measure=dependence.hsic, output=FALSE) {
+                                 dependence.measure=dependence.hsic, 
+                                 output=FALSE) {
   if(output) {
     print("start recovering causal order")
     print("nodes are")
