@@ -2,7 +2,8 @@
 Ranked-Based Causal Discovery for Post-Nonlinear Models
 
 Official implementation of rank-based PNL causal discovery methods RankG and RankS
-
+\\
+\\
 
 
 
