@@ -87,6 +87,20 @@ simulate.mult.pnl.erdos.renyi <- function(n, d, name_noise, name_h) {
     h_inv <- function(z) {
       exp(z) - 1
     }
+  } else if(name_noise == "logis" & name_h == "cube") {
+    noise_f <- function(n) {
+      rlogis(n)
+    }
+    h_inv <- function(z) {
+      exponent(z, 1/3)
+    }
+  } else if(name_noise == "logis" & name_h == "log") {
+    noise_f <- function(n) {
+      rlogis(n)
+    }
+    h_inv <- function(z) {
+      exp(z) - 1
+    }
   } 
   
   g <- function(x) {
