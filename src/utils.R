@@ -104,8 +104,8 @@ simulate.mult.pnl.erdos.renyi <- function(n, d, name_noise, name_h) {
   } 
   
   g <- function(x) {
-    beta <- runif(2*dim(x)[2], -10, 10)
-    val <- cbind(x, x^2) %*% beta
+    beta <- runif(4*dim(x)[2], -10, 10)
+    val <- cbind(x, x^2, x^3, x^4) %*% beta
     return(val)
   }
   

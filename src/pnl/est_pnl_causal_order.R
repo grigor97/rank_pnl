@@ -32,7 +32,7 @@ est.pnl.causal.order <- function(data, beta.est.alg, h.est.alg,
       
       Y <- as.matrix(data[, node])
       X <- as.matrix(data[, rem_nodes])
-      XX <- cbind(X, X^2)
+      XX <- cbind(X, X^2, X^3, X^4)
       
       res_beta_est <- beta.est.alg(Y, XX)
       res_h_est <- h.est.alg(res_beta_est$est_beta, Y, XX)
