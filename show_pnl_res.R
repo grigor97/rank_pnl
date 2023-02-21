@@ -143,6 +143,17 @@ print_latex_format <- function(ns, res_gaussian, res_evd) {
   }
 }
 
+print_latex_format_one <- function(ns, res) {
+  for(i in 1:nrow(res$means)) {
+    rr <- as.character(ns[i])
+    for(j in 1:ncol(res$means)) {
+      rr <- paste(rr, "&", res$means[i, j], "$\\pm$", round(res$stds[i, j], 2))
+    }
+    rr <- paste(rr, "\\", "\\", "\n", sep="")
+    cat(rr)
+  }
+}
+
 
 result_generic_name <- "pnl_results_noise_cube_method_nnn_ddd_100_.json"
 abpnl_generic_name <- "abpnl_results_noise_cube_abpnlnnn_ddd100.csv"
@@ -153,17 +164,22 @@ d <- 4
 ns <- seq(100, by=50, len=5)
 col_names <- c("smoothed", "prlg", "abpnl", "resit")
 
-dir_path <- "../post_final_res/pnl_beta_100/"
+dir_path <- "../res_submit/twodegree/res100/"
 noise <- "evd"
 res_evd_sm_100 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 noise <- "gaussian"
 res_gaussian_sm_100 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+noise <- "logis"
+res_logis_sm_100 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 
-dir_path <- "../post_final_res/pnl_beta_10/"
+
+dir_path <- "../res_submit/twodegree/res10/"
 noise <- "evd"
 res_evd_sm_10 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 noise <- "gaussian"
 res_gaussian_sm_10 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+noise <- "logis"
+res_logis_sm_10 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 
 # print_latex_format(ns, res_gaussian, res_evd)
 res_gaussian_sm_10
@@ -172,11 +188,26 @@ df_gaussian_sm_100 <- data.frame(res_gaussian_sm_100$means)
 df_gaussian_sm_100["sample_size"] <- ns
 df_evd_sm_100 <- data.frame(res_evd_sm_100$means)
 df_evd_sm_100["sample_size"] <- ns
+df_logis_sm_100 <- data.frame(res_logis_sm_100$means)
+df_logis_sm_100["sample_size"] <- ns
+
 
 df_gaussian_sm_10 <- data.frame(res_gaussian_sm_10$means)
 df_gaussian_sm_10["sample_size"] <- ns
 df_evd_sm_10 <- data.frame(res_evd_sm_10$means)
 df_evd_sm_10["sample_size"] <- ns
+df_logis_sm_10 <- data.frame(res_logis_sm_10$means)
+df_logis_sm_10["sample_size"] <- ns
+
+
+print_latex_format_one(df_gaussian_sm_100$sample_size, res_gaussian_sm_100)
+print_latex_format_one(df_evd_sm_100$sample_size, res_evd_sm_100)
+print_latex_format_one(df_logis_sm_100$sample_size, res_logis_sm_100)
+
+
+print_latex_format_one(df_gaussian_sm_10$sample_size, res_gaussian_sm_10)
+print_latex_format_one(df_evd_sm_10$sample_size, res_evd_sm_10)
+print_latex_format_one(df_logis_sm_10$sample_size, res_logis_sm_10)
 
 
 # 4 nodes prlg
@@ -185,19 +216,24 @@ d <- 4
 ns <- c(100, seq(500, by=500, len=4))
 col_names <- c("prlg", "abpnl", "resit")
 
-dir_path <- "../post_final_res/pnl_beta_100/"
+dir_path <- "../res_submit/twodegree/res100/"
 noise <- "evd"
 res_evd_prlg_100 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 
 noise <- "gaussian"
 res_gaussian_prlg_100 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
-# res_gaussian_prlg_100
 
-dir_path <- "../post_final_res/pnl_beta_10/"
+noise <- "logis"
+res_logis_prlg_100 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+
+
+dir_path <- "../res_submit/twodegree/res10/"
 noise <- "evd"
 res_evd_prlg_10 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 noise <- "gaussian"
 res_gaussian_prlg_10 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+noise <- "logis"
+res_logis_prlg_10 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 
 # print_latex_format(ns, res_gaussian, res_evd)
 
@@ -206,11 +242,15 @@ df_gaussian_prlg_100 <- data.frame(res_gaussian_prlg_100$means)
 df_gaussian_prlg_100["sample_size"] <- ns
 df_evd_prlg_100 <- data.frame(res_evd_prlg_100$means)
 df_evd_prlg_100["sample_size"] <- ns
+df_logis_prlg_100 <- data.frame(res_logis_prlg_100$means)
+df_logis_prlg_100["sample_size"] <- ns
 
 df_gaussian_prlg_10 <- data.frame(res_gaussian_prlg_10$means)
 df_gaussian_prlg_10["sample_size"] <- ns
 df_evd_prlg_10 <- data.frame(res_evd_prlg_10$means)
 df_evd_prlg_10["sample_size"] <- ns
+df_logis_prlg_10 <- data.frame(res_logis_prlg_10$means)
+df_logis_prlg_10["sample_size"] <- ns
 
 
 
@@ -220,67 +260,109 @@ d <- 7
 ns <- c(100, seq(500, by=500, len=4))
 col_names <- c("prlg", "abpnl", "resit")
 
-dir_path <- "../post_final_res/pnl_beta_100/"
+dir_path <- "../res_submit/twodegree/res100/"
 noise <- "evd"
 res_evd_prlg_100_7 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 
 noise <- "gaussian"
 res_gaussian_prlg_100_7 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 
+noise <- "logis"
+res_logis_prlg_100_7 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 
-dir_path <- "../post_final_res/pnl_beta_10/"
+
+dir_path <- "../res_submit/twodegree/res10/"
 noise <- "evd"
 res_evd_prlg_10_7 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 noise <- "gaussian"
 res_gaussian_prlg_10_7 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+
+noise <- "logis"
+res_logis_prlg_10_7 <- get_prlg_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
 
 
 df_gaussian_prlg_100_7 <- data.frame(res_gaussian_prlg_100_7$means)
 df_gaussian_prlg_100_7["sample_size"] <- ns
 df_evd_prlg_100_7 <- data.frame(res_evd_prlg_100_7$means)
 df_evd_prlg_100_7["sample_size"] <- ns
+df_logis_prlg_100_7 <- data.frame(res_logis_prlg_100_7$means)
+df_logis_prlg_100_7["sample_size"] <- ns
 
 df_gaussian_prlg_10_7 <- data.frame(res_gaussian_prlg_10_7$means)
 df_gaussian_prlg_10_7["sample_size"] <- ns
 df_evd_prlg_10_7 <- data.frame(res_evd_prlg_10_7$means)
 df_evd_prlg_10_7["sample_size"] <- ns
-
+df_logis_prlg_10_7 <- data.frame(res_logis_prlg_10_7$means)
+df_logis_prlg_10_7["sample_size"] <- ns
 
 # mean estimates
 
 df_gaussian_sm_100
 df_evd_sm_100
+df_logis_sm_100
 df_gaussian_sm_10
 df_evd_sm_10
+df_logis_sm_10
 
 
 df_gaussian_prlg_100
 df_evd_prlg_100
+df_logis_prlg_100
 df_gaussian_prlg_10
 df_evd_prlg_10
+df_logis_prlg_10
 
 
 df_gaussian_prlg_100_7
 df_evd_prlg_100_7
+df_logis_prlg_100_7
 df_gaussian_prlg_10_7
 df_evd_prlg_10_7
+df_logis_prlg_10_7
 
 # end mean estimates
 
+print_latex_format_one(df_gaussian_prlg_100$sample_size, res_gaussian_prlg_100)
+print_latex_format_one(df_evd_prlg_100$sample_size, res_evd_prlg_100)
+print_latex_format_one(df_logis_prlg_100$sample_size, res_logis_prlg_100)
+
+
+print_latex_format_one(df_gaussian_prlg_10$sample_size, res_gaussian_prlg_10)
+print_latex_format_one(df_evd_prlg_10$sample_size, res_evd_prlg_10)
+print_latex_format_one(df_logis_prlg_10$sample_size, res_logis_prlg_10)
+
+
+
+print_latex_format_one(df_gaussian_prlg_100_7$sample_size, res_gaussian_prlg_100_7)
+print_latex_format_one(df_evd_prlg_100_7$sample_size, res_evd_prlg_100_7)
+print_latex_format_one(df_logis_prlg_100_7$sample_size, res_logis_prlg_100_7)
+
+
+print_latex_format_one(df_gaussian_prlg_10_7$sample_size, res_gaussian_prlg_10_7)
+print_latex_format_one(df_evd_prlg_10_7$sample_size, res_evd_prlg_10_7)
+print_latex_format_one(df_logis_prlg_10_7$sample_size, res_logis_prlg_10_7)
+
+
+
 df_gaussian_sm_100["noise"] <- "Gaussian"
 df_evd_sm_100["noise"] <- "Gumbel"
+df_logis_sm_100["noise"] <- "Logistic"
 df_gaussian_sm_10["noise"] <- "Gaussian"
 df_evd_sm_10["noise"] <- "Gumbel"
+df_logis_sm_10["noise"] <- "Logistic"
 
 df_gaussian_sm_100["beta"] <- 100
 df_evd_sm_100["beta"] <- 100
+df_logis_sm_100["beta"] <- 100
 df_gaussian_sm_10["beta"] <- 10
 df_evd_sm_10["beta"] <- 10
+df_logis_sm_10["beta"] <- 10
 
-df_sm <- rbind(df_gaussian_sm_100, df_evd_sm_100, df_gaussian_sm_10, df_evd_sm_10)
+df_sm <- rbind(df_gaussian_sm_100, df_evd_sm_100, df_logis_sm_100,
+               df_gaussian_sm_10, df_evd_sm_10, df_logis_sm_10)
 rownames(df_sm) <- NULL
 df_sm$beta <- factor(df_sm$beta)
-df_sm$noise <- factor(df_sm$noise, levels = c("Gaussian", "Gumbel"))
+df_sm$noise <- factor(df_sm$noise, levels = c("Gaussian", "Gumbel", "Logistic"))
 df_sm
 
 library("RColorBrewer")
@@ -313,59 +395,79 @@ ggplot(data=df_sm) +
 
 df_gaussian_prlg_100
 df_evd_prlg_100
+df_logis_prlg_100
 df_gaussian_prlg_10
 df_evd_prlg_10
+df_logis_prlg_10
 
 
 df_gaussian_prlg_100_7
 df_evd_prlg_100_7
+df_logis_prlg_100_7
 df_gaussian_prlg_10_7
 df_evd_prlg_10_7
+df_logis_prlg_10_7
 
 
 df_gaussian_prlg_100["noise"] <- "Gaussian"
 df_evd_prlg_100["noise"] <- "Gumbel"
+df_logis_prlg_100["noise"] <- "Logistic"
 df_gaussian_prlg_10["noise"] <- "Gaussian"
 df_evd_prlg_10["noise"] <- "Gumbel"
+df_logis_prlg_10["noise"] <- "Logistic"
 
 df_gaussian_prlg_100["beta"] <- 100
 df_evd_prlg_100["beta"] <- 100
+df_logis_prlg_100["beta"] <- 100
 df_gaussian_prlg_10["beta"] <- 10
 df_evd_prlg_10["beta"] <- 10
+df_logis_prlg_10["beta"] <- 10
 
 df_gaussian_prlg_100["d"] <- "4 nodes"
 df_evd_prlg_100["d"] <- "4 nodes"
+df_logis_prlg_100["d"] <- "4 nodes"
 df_gaussian_prlg_10["d"] <- "4 nodes"
 df_evd_prlg_10["d"] <- "4 nodes"
+df_logis_prlg_10["d"] <- "4 nodes"
 
 
 df_gaussian_prlg_100_7["noise"] <- "Gaussian"
 df_evd_prlg_100_7["noise"] <- "Gumbel"
+df_logis_prlg_100_7["noise"] <- "Logistic"
 df_gaussian_prlg_10_7["noise"] <- "Gaussian"
 df_evd_prlg_10_7["noise"] <- "Gumbel"
+df_logis_prlg_10_7["noise"] <- "Logistic"
 
 df_gaussian_prlg_100_7["beta"] <- 100
 df_evd_prlg_100_7["beta"] <- 100
+df_logis_prlg_100_7["beta"] <- 100
 df_gaussian_prlg_10_7["beta"] <- 10
 df_evd_prlg_10_7["beta"] <- 10
+df_logis_prlg_10_7["beta"] <- 10
 
 df_gaussian_prlg_100_7["d"] <- "7 nodes"
 df_evd_prlg_100_7["d"] <- "7 nodes"
+df_logis_prlg_100_7["d"] <- "7 nodes"
 df_gaussian_prlg_10_7["d"] <- "7 nodes"
 df_evd_prlg_10_7["d"] <- "7 nodes"
+df_logis_prlg_10_7["d"] <- "7 nodes"
 
 df_prlg <- rbind(df_gaussian_prlg_100, 
                  df_evd_prlg_100, 
+                 df_logis_prlg_100, 
                  df_gaussian_prlg_10, 
                  df_evd_prlg_10,
+                 df_logis_prlg_10,
                  df_gaussian_prlg_100_7, 
                  df_evd_prlg_100_7, 
+                 df_logis_prlg_100_7, 
                  df_gaussian_prlg_10_7, 
-                 df_evd_prlg_10_7)
+                 df_evd_prlg_10_7,
+                 df_logis_prlg_10_7)
 rownames(df_prlg) <- NULL
 df_prlg$beta <- factor(df_prlg$beta)
 df_prlg$d <- factor(df_prlg$d)
-df_prlg$noise <- factor(df_prlg$noise, levels = c("Gaussian", "Gumbel"))
+df_prlg$noise <- factor(df_prlg$noise, levels = c("Gaussian", "Gumbel", "Logistic"))
 df_prlg
 
 
@@ -376,7 +478,7 @@ ggplot(data=df_prlg) +
   geom_point(aes(x=sample_size, y=abpnl, color="AbPNL")) +
   geom_line(aes(x=sample_size, y=resit, linetype=beta, color="RESIT")) +
   geom_point(aes(x=sample_size, y=resit, color="RESIT")) +
-  facet_grid(d~noise) + 
+  facet_grid(d~noise, scales = "free_y", space = "free") + 
   scale_color_manual(values=cls[c(3, 7, 2)], 
                      breaks=c("RankG", "AbPNL", "RESIT")) +
   scale_linetype_manual(values=c("dashed", "solid"), 
@@ -421,4 +523,97 @@ print_latex_format(df_gaussian_prlg_100$sample_size,
 
 
 
+
+
+# 4 degree g function
+# 4 nodes smoothed
+d <- 4
+ns <- seq(100, by=50, len=5)
+col_names <- c("smoothed", "prlg", "abpnl", "resit")
+
+dir_path <- "../res_submit/fourdegree/res100/"
+noise <- "evd"
+res_evd_sm_100 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+noise <- "gaussian"
+res_gaussian_sm_100 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+noise <- "logis"
+res_logis_sm_100 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+
+
+dir_path <- "../res_submit/fourdegree/res10/"
+noise <- "evd"
+res_evd_sm_10 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+noise <- "gaussian"
+res_gaussian_sm_10 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+noise <- "logis"
+res_logis_sm_10 <- get_smoothed_all_results(dir_path, col_names, ns, d, noise, result_generic_name, abpnl_generic_name)
+
+# print_latex_format(ns, res_gaussian, res_evd)
+res_gaussian_sm_10
+
+df_gaussian_sm_100 <- data.frame(res_gaussian_sm_100$means)
+df_gaussian_sm_100["sample_size"] <- ns
+df_evd_sm_100 <- data.frame(res_evd_sm_100$means)
+df_evd_sm_100["sample_size"] <- ns
+df_logis_sm_100 <- data.frame(res_logis_sm_100$means)
+df_logis_sm_100["sample_size"] <- ns
+
+
+df_gaussian_sm_10 <- data.frame(res_gaussian_sm_10$means)
+df_gaussian_sm_10["sample_size"] <- ns
+df_evd_sm_10 <- data.frame(res_evd_sm_10$means)
+df_evd_sm_10["sample_size"] <- ns
+df_logis_sm_10 <- data.frame(res_logis_sm_10$means)
+df_logis_sm_10["sample_size"] <- ns
+
+df_gaussian_sm_100["noise"] <- "Gaussian"
+df_evd_sm_100["noise"] <- "Gumbel"
+df_logis_sm_100["noise"] <- "Logistic"
+df_gaussian_sm_10["noise"] <- "Gaussian"
+df_evd_sm_10["noise"] <- "Gumbel"
+df_logis_sm_10["noise"] <- "Logistic"
+
+df_gaussian_sm_100["beta"] <- 100
+df_evd_sm_100["beta"] <- 100
+df_logis_sm_100["beta"] <- 100
+df_gaussian_sm_10["beta"] <- 10
+df_evd_sm_10["beta"] <- 10
+df_logis_sm_10["beta"] <- 10
+
+df_sm <- rbind(df_gaussian_sm_100, df_evd_sm_100, df_logis_sm_100,
+               df_gaussian_sm_10, df_evd_sm_10, df_logis_sm_10)
+rownames(df_sm) <- NULL
+df_sm$beta <- factor(df_sm$beta)
+df_sm$noise <- factor(df_sm$noise, levels = c("Gaussian", "Gumbel", "Logistic"))
+df_sm
+
+ggplot(data=df_sm) +
+  geom_line(aes(x=sample_size, y=smoothed, linetype=beta, color="RankS")) +
+  geom_point(aes(x=sample_size, y=smoothed, color="RankS")) +
+  geom_line(aes(x=sample_size, y=prlg, linetype=beta, color="RankG")) +
+  geom_point(aes(x=sample_size, y=prlg, color="RankG")) +
+  geom_line(aes(x=sample_size, y=abpnl, linetype=beta, color="AbPNL")) +
+  geom_point(aes(x=sample_size, y=abpnl, color="AbPNL")) +
+  geom_line(aes(x=sample_size, y=resit, linetype=beta, color="RESIT")) +
+  geom_point(aes(x=sample_size, y=resit, color="RESIT")) +
+  facet_wrap(vars(noise)) + 
+  scale_color_manual(values=cls[c(4, 3, 7, 2)], 
+                     breaks=c("RankS", "RankG", "AbPNL", "RESIT")) +
+  scale_linetype_manual(values=c("dashed", "solid"), 
+                        breaks=c(10, 100),
+                        labels=c("weak", "strong"),
+                        name="Signal") +
+  labs(color='Methods', title="", x="sample size", y="error") +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "right") +
+  guides(color=guide_legend(order = 1), linetype=guide_legend(order = 2))
+
+
+print_latex_format_one(df_gaussian_sm_100$sample_size, res_gaussian_sm_100)
+print_latex_format_one(df_evd_sm_100$sample_size, res_evd_sm_100)
+print_latex_format_one(df_logis_sm_100$sample_size, res_logis_sm_100)
+
+
+print_latex_format_one(df_gaussian_sm_10$sample_size, res_gaussian_sm_10)
+print_latex_format_one(df_evd_sm_10$sample_size, res_evd_sm_10)
+print_latex_format_one(df_logis_sm_10$sample_size, res_logis_sm_10)
 
